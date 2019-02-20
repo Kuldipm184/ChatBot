@@ -4,6 +4,8 @@
 
 import nltk
 import warnings
+from flask import Flask, render_template, request
+
 
 warnings.filterwarnings("ignore")
 
@@ -73,38 +75,37 @@ def response(user_response):
         robo_response = robo_response + sent_tokens[idx]
         return robo_response
 
-import speech_recognition as sr
-def Speech_To_Text():
-    r = sr.Recognizer()
 
-    with sr.Microphone() as source:
-        print('Start Speaking')
-        audio = r.listen(source)
-        text = r.recognize_google(audio)
-        print(text)
-    return text
+class MyChatBOT:
 
-flag = True
-print("ROBO: My name is Robo. I will answer your queries about Chatbots. If you want to exit, type Bye!")
-
-while (flag == True):
-    #user_response = Speech_To_Text()
-    user_response = input()
-    user_response = user_response.lower()
-    if (user_response != 'bye'):
-        if (user_response == 'thanks' or user_response == 'thank you'):
-            flag = False
-            print("ROBO: You are welcome..")
-        else:
-            if (greeting(user_response) != None):
-                print("ROBO: " + greeting(user_response))
+    @staticmethod
+    def get_response(user_response):
+        if (user_response != 'bye'):
+            if (user_response == 'thanks' or user_response == 'thank you'):
+                return "ROBO: You are welcome.."
             else:
-                print("ROBO: ", end="")
-                print(response(user_response))
-                sent_tokens.remove(user_response)
-    else:
-        flag = False
-        print("ROBO: Bye! take care..")
+                if (greeting(user_response) != None):
+                    return "ROBO: " + greeting(user_response)
+                else:
+                    #sent_tokens.remove(user_response)
+                    return response(user_response)
+        else:
+            return "ROBO: Bye! take care.."
+
+app = Flask(__name__)
 
 
+@app.route("/")
+def home():
+    return render_template("index.html")
 
+english_bot = MyChatBOT()
+
+@app.route("/get")
+def get_bot_response():
+    userText = request.args.get('msg')
+    return str(english_bot.get_response(userText))
+
+
+if __name__ == "__main__":
+    app.run()
