@@ -5,7 +5,7 @@
 import nltk
 import warnings
 from flask import Flask, render_template, request
-
+nltk.data.path.append(r'heroku-python-script-master/nltk/')
 
 warnings.filterwarnings("ignore")
 
