@@ -3,6 +3,7 @@
 # # Meet Robo: your friend
 
 import nltk
+nltk.download('punkt')
 import warnings
 from flask import Flask, render_template, request
 nltk.data.path.append(r'heroku-python-script-master/nltk/')
